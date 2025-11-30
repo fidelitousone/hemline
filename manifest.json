@@ -1,0 +1,10 @@
+{
+  "name": "Hemline",
+  "description": "An extension to quickly tailor a resume using AI",
+  "version": "0.1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "main.html",
+    "default_icon": "placeholder.png"
+  }
+}
