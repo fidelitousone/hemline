@@ -1,3 +1,4 @@
+import { isEmpty } from 'ramda';
 const jobTitleIdentifier: string = 'job__title';
 const jobDescriptionIdentifier: string = 'job__description body';
 
@@ -21,10 +22,11 @@ const getJobTitle = (): string => {
 
   const primaryElement = getHTMLElement(jobTitleElementList);
   let title = primaryElement.innerText;
-  let [jobTitle, _] = title.split('\n');
-  if (jobTitle?.length !== 0) {
-    return jobTitle;
+  let jobTitle = title.split('\n')[0] ?? '';
+  if (isEmpty(jobTitle)) {
+    throw new Error('Failed to get the role title');
   }
+  return jobTitle;
 };
 
 const getJobDescription = (): string => {
