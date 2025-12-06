@@ -10,7 +10,7 @@
   "content_scripts": [
     {
       "matches": ["https://job-boards.greenhouse.io/*"],
-      "js": ["content-script.js"]
+      "js": ["./dist/content-script.js"]
     }
   ]
 }
