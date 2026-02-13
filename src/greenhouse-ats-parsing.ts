@@ -3,7 +3,7 @@ const jobDescriptionIdentifier: string = '.job__description.body';
 
 const getHTMLElement = (selector: string): HTMLElement => {
   const element = document.querySelector(selector);
-  
+
   if (!element) {
     throw new Error(`Unable to locate element with selector: ${selector}`);
   }
@@ -11,7 +11,7 @@ const getHTMLElement = (selector: string): HTMLElement => {
   if (!(element instanceof HTMLElement)) {
     throw new Error('Element fetched is not an HTML Element!');
   }
-  
+
   return element;
 };
 
@@ -20,11 +20,11 @@ const getJobTitle = (): string => {
   const primaryElement = getHTMLElement(jobTitleIdentifier);
   const title = primaryElement.innerText;
   let jobTitle = title.split('\n')[0] ?? '';
-  
+
   if (!jobTitle || jobTitle.length === 0) {
     throw new Error('Failed to get the role title');
   }
-  
+
   return jobTitle;
 };
 
