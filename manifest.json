@@ -4,16 +4,14 @@
   "version": "0.1.0",
   "manifest_version": 3,
   "action": {
-    "default_popup": "main.html",
+    "default_popup": "index.html",
     "default_icon": "placeholder.png"
   },
-  "permissions": [
-    "activeTab"
-  ],
+  "permissions": ["activeTab", "storage"],
   "content_scripts": [
     {
       "matches": ["https://job-boards.greenhouse.io/*"],
-      "js": ["./dist/greenhouse-ats-parsing.js"]
+      "js": ["src/greenhouse-ats-parsing.ts"]
     }
   ]
 }

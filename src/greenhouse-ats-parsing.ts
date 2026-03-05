@@ -35,7 +35,7 @@ const getJobDescription = (): string => {
 };
 
 chrome.runtime.onMessage.addListener(
-  (message: { type: string }, _sender, sendResponse: (response: unknown) => void) => {
+  (message: { type: string }, _sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
     if (message.type === 'getJobData') {
       try {
         const jobTitle = getJobTitle();
