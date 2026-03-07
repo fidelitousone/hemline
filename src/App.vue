@@ -23,6 +23,9 @@
           class="w-full h-40 border border-gray-300 rounded p-2 text-sm resize-none"
           placeholder="Paste the job description here..."
         />
+        <button class="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 rounded">
+          Tailor Resume
+        </button>
       </template>
 
       <template v-else-if="activeTab === 'api'">
