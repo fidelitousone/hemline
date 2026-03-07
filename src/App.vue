@@ -1,14 +1,53 @@
 <template>
-  <div class="app">
-    <p>Hemline is loading...</p>
+  <div class="w-80">
+    <div class="flex border-b border-gray-300">
+      <button
+        v-for="tab in tabs"
+        :key="tab.id"
+        @click="activeTab = tab.id"
+        class="flex-1 py-2 text-sm font-medium"
+        :class="activeTab === tab.id
+          ? 'border-b-2 border-blue-500 text-blue-600'
+          : 'text-gray-500 hover:text-gray-700'"
+      >
+        {{ tab.label }}
+      </button>
+    </div>
+
+    <div class="p-4">
+      <template v-if="activeTab === 'job'">
+        <label class="block text-sm mb-1" for="job-description">Job Description</label>
+        <textarea
+          id="job-description"
+          v-model="jobDescription"
+          class="w-full h-40 border border-gray-300 rounded p-2 text-sm resize-none"
+          placeholder="Paste the job description here..."
+        />
+      </template>
+
+      <template v-else-if="activeTab === 'api'">
+        <label class="block text-sm mb-1" for="api-key">OpenRouter API Key</label>
+        <input
+          id="api-key"
+          v-model="apiKey"
+          type="password"
+          class="w-full border border-gray-300 rounded p-2 text-sm"
+          placeholder="sk-or-..."
+        />
+      </template>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-</script>
+import { ref } from 'vue'
 
-<style scoped>
-.app {
-  padding: 16px;
-}
-</style>
+const tabs = [
+  { id: 'job', label: 'Job Description' },
+  { id: 'api', label: 'API Key' },
+]
+
+const activeTab = ref('job')
+const jobDescription = ref('')
+const apiKey = ref('')
+</script>
