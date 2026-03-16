@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 
 const tabs = [
   { id: 'job', label: 'Job Description' },
@@ -53,4 +53,15 @@ const tabs = [
 const activeTab = ref('job')
 const jobDescription = ref('')
 const apiKey = ref('')
+
+onMounted(async () => {
+  const result = await chrome.storage.local.get('openrouterApiKey')
+  if (result.openrouterApiKey) {
+    apiKey.value = result.openrouterApiKey
+  }
+})
+
+watch(apiKey, (value) => {
+  chrome.storage.local.set({ openrouterApiKey: value })
+})
 </script>
