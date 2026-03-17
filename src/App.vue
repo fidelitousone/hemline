@@ -37,6 +37,16 @@
           class="w-full border border-gray-300 rounded p-2 text-sm"
           placeholder="sk-or-..."
         />
+        <button
+          @click="testApiKey"
+          :disabled="!apiKey"
+          class="mt-3 w-full text-white text-sm font-medium py-2 rounded transition-colors"
+          :class="apiKey
+            ? 'bg-blue-500 hover:bg-blue-600'
+            : 'bg-gray-300 cursor-not-allowed'"
+        >
+          Test Key
+        </button>
       </template>
     </div>
   </div>
@@ -64,4 +74,9 @@ onMounted(async () => {
 watch(apiKey, (value) => {
   chrome.storage.local.set({ openrouterApiKey: value })
 })
+
+async function testApiKey() {
+  const response = await chrome.runtime.sendMessage({ type: 'testApiKey', apiKey: apiKey.value })
+  console.debug('[hemline] testApiKey response:', response)
+}
 </script>
