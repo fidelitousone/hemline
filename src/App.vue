@@ -47,6 +47,7 @@
         >
           Test Key
         </button>
+        <p v-if="apiKeySuccess" class="mt-2 text-sm text-green-600">Connected to OpenRouter successfully!</p>
       </template>
     </div>
   </div>
@@ -63,6 +64,7 @@ const tabs = [
 const activeTab = ref('job')
 const jobDescription = ref('')
 const apiKey = ref('')
+const apiKeySuccess = ref(false)
 
 onMounted(async () => {
   const result = await chrome.storage.local.get('openrouterApiKey')
@@ -77,6 +79,7 @@ watch(apiKey, (value) => {
 
 async function testApiKey() {
   const response = await chrome.runtime.sendMessage({ type: 'testApiKey', apiKey: apiKey.value })
-  console.debug('[hemline] testApiKey response:', response)
+  console.log('[hemline] testApiKey response:', response)
+  apiKeySuccess.value = response?.success === true
 }
 </script>
