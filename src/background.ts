@@ -1,11 +1,20 @@
 import { OpenRouter } from '@openrouter/sdk';
+import { isNullOrEmpty } from './lib/strings';
 
 console.log('Service Worker Sanity Check');
 
 chrome.runtime.onMessage.addListener(
   (message: { type: string; apiKey?: string }, _sender, sendResponse) => {
     if (message.type === 'testApiKey') {
-      const client = new OpenRouter({ apiKey: message.apiKey ?? '' });
+      const openRouterAPIKey = message.apiKey;
+      if (isNullOrEmpty(openRouterAPIKey)) {
+        sendResponse({
+          success: false,
+          error: 'Cannot connect with empty API Key',
+        });
+        return true;
+      }
+      const client = new OpenRouter({ apiKey: message.apiKey });
       //TODO: Change the model to use claude officially, gpt-4o is cheap enough for testing
       client.chat
         .send({
