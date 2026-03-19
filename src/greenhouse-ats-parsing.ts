@@ -1,3 +1,4 @@
+import type { JobData } from "./types/job-types";
 const jobTitleIdentifier: string = '.job__title h1';
 const jobDescriptionIdentifier: string = '.job__description.body';
 
@@ -43,6 +44,7 @@ chrome.runtime.onMessage.addListener(
       try {
         const jobTitle = getJobTitle();
         const jobDescription = getJobDescription();
+        const job:JobData = {jobTitle, jobDescription}
         sendResponse({ success: true, jobTitle, jobDescription });
       } catch (error) {
         sendResponse({ success: false, error: String(error) });
