@@ -27,11 +27,52 @@
           class="w-full h-40 border border-gray-300 rounded p-2 text-sm resize-none"
           placeholder="Paste the job description here..."
         />
-        <button
-          class="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 rounded"
-        >
-          Tailor Resume
-        </button>
+        <div class="mt-3 flex gap-2">
+          <button
+            class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 rounded"
+          >
+            Tailor Resume
+          </button>
+          <button
+            @click="copyJobDescription"
+            :disabled="!jobDescription"
+            :title="
+              jobDescription ? 'Copy job description' : 'No description to copy'
+            "
+            class="px-3 py-2 rounded border transition-colors"
+            :class="
+              jobDescription
+                ? 'border-gray-300 hover:bg-gray-100 text-gray-600'
+                : 'border-gray-200 text-gray-300 cursor-not-allowed'
+            "
+          >
+            <svg
+              v-if="!copied"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              />
+            </svg>
+            <svg
+              v-else
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 text-green-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </button>
+        </div>
       </template>
 
       <template v-else-if="activeTab === 'api'">
@@ -77,17 +118,39 @@ const activeTab = ref('job');
 const jobDescription = ref('');
 const apiKey = ref('');
 const apiKeySuccess = ref(false);
+const copied = ref(false);
 
 onMounted(async () => {
   const result = await chrome.storage.local.get('openrouterApiKey');
   if (result.openrouterApiKey) {
     apiKey.value = result.openrouterApiKey;
   }
+
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab?.id) {
+    try {
+      const jobData = await chrome.tabs.sendMessage(tab.id, {
+        type: 'getJobData',
+      });
+      if (jobData?.success && jobData.jobDescription) {
+        jobDescription.value = jobData.jobDescription;
+      }
+    } catch {
+      // Unsupported Page...
+    }
+  }
 });
 
 watch(apiKey, (value) => {
   chrome.storage.local.set({ openrouterApiKey: value });
 });
+
+async function copyJobDescription() {
+  if (!jobDescription.value) return;
+  await navigator.clipboard.writeText(jobDescription.value);
+  copied.value = true;
+  setTimeout(() => (copied.value = false), 2000);
+}
 
 async function testApiKey() {
   const response = await chrome.runtime.sendMessage({

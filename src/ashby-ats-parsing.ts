@@ -1,6 +1,6 @@
 import type { JobData } from './types/job-types';
-const jobTitleIdentifier: string = '.job__title h1';
-const jobDescriptionIdentifier: string = '.job__description.body';
+
+const jobTitleIdentifier: string = 'h1.ashby-job-posting-heading';
 
 const getHTMLElement = (selector: string): HTMLElement => {
   const element = document.querySelector(selector);
@@ -18,8 +18,7 @@ const getHTMLElement = (selector: string): HTMLElement => {
 
 const getJobTitle = (): string => {
   const primaryElement = getHTMLElement(jobTitleIdentifier);
-  const title = primaryElement.innerText;
-  let jobTitle = title.split('\n')[0] ?? '';
+  const jobTitle = primaryElement.innerText.trim();
 
   if (!jobTitle || jobTitle.length === 0) {
     throw new Error('Failed to get the role title');
@@ -28,9 +27,16 @@ const getJobTitle = (): string => {
   return jobTitle;
 };
 
+const jobDescriptionIdentifier: string = '[class^="_descriptionText"]';
+
 const getJobDescription = (): string => {
   const primaryElement = getHTMLElement(jobDescriptionIdentifier);
   const description = primaryElement.innerText;
+
+  if (!description || description.length === 0) {
+    throw new Error('Failed to get the job description');
+  }
+
   return description;
 };
 
