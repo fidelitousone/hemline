@@ -1,5 +1,5 @@
 <template>
-  <div class="w-80">
+  <div class="w-80 min-h-[520px]">
     <div class="flex border-b border-gray-300">
       <button
         v-for="tab in tabs"
@@ -24,7 +24,7 @@
         <textarea
           id="job-description"
           v-model="jobDescription"
-          class="w-full h-40 border border-gray-300 rounded p-2 text-sm resize-none"
+          class="w-full h-72 border border-gray-300 rounded p-2 text-sm resize-none"
           placeholder="Paste the job description here..."
         />
         <div class="mt-3 flex gap-2">
