@@ -18,6 +18,7 @@
 
     <div class="p-4">
       <template v-if="activeTab === 'job'">
+        <p v-if="jobTitle" class="text-base font-semibold mb-1">{{ jobTitle }}</p>
         <label class="block text-sm mb-1" for="job-description"
           >Job Description</label
         >
@@ -116,6 +117,7 @@ const tabs = [
 ];
 
 const activeTab = ref('job');
+const jobTitle = ref('');
 const jobDescription = ref('');
 const apiKey = ref('');
 const apiKeySuccess = ref(false);
@@ -135,9 +137,8 @@ onMounted(async () => {
         func: detectJobData,
       });
       const jobData = results[0]?.result;
-      if (jobData?.jobDescription) {
-        jobDescription.value = jobData.jobDescription;
-      }
+      if (jobData?.jobTitle) jobTitle.value = jobData.jobTitle;
+      if (jobData?.jobDescription) jobDescription.value = jobData.jobDescription;
     } catch {
       // Unsupported page or scripting not permitted
     }
