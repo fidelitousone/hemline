@@ -5,7 +5,7 @@ export default defineManifest({
   name: 'Hemline',
   description: 'An extension to quickly tailor a resume using AI',
   version: '0.1.0',
-  permissions: ['activeTab', 'storage', 'tabs'],
+  permissions: ['activeTab', 'storage', 'tabs', 'scripting'],
   background: {
     service_worker: 'src/background.ts',
     type: 'module',
@@ -14,14 +14,4 @@ export default defineManifest({
     default_popup: 'index.html',
     default_icon: 'placeholder.png',
   },
-  content_scripts: [
-    {
-      matches: ['https://job-boards.greenhouse.io/*'],
-      js: ['src/greenhouse-ats-parsing.ts'],
-    },
-    {
-      matches: ['https://jobs.ashbyhq.com/*'],
-      js: ['src/ashby-ats-parsing.ts'],
-    },
-  ],
 });
