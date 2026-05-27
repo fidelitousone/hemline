@@ -1,5 +1,5 @@
 <template>
-  <div class="w-80 min-h-[520px]">
+  <div class="w-80 min-h-130">
     <div class="flex border-b border-gray-300">
       <button
         v-for="tab in tabs"
@@ -108,6 +108,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
+import { detectJobData } from './ats-detector';
 
 const tabs = [
   { id: 'job', label: 'Job Description' },
@@ -129,14 +130,16 @@ onMounted(async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (tab?.id) {
     try {
-      const jobData = await chrome.tabs.sendMessage(tab.id, {
-        type: 'getJobData',
+      const results = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: detectJobData,
       });
-      if (jobData?.success && jobData.jobDescription) {
+      const jobData = results[0]?.result;
+      if (jobData?.jobDescription) {
         jobDescription.value = jobData.jobDescription;
       }
     } catch {
-      // Unsupported Page...
+      // Unsupported page or scripting not permitted
     }
   }
 });
