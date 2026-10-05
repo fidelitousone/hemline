@@ -1,3 +1,6 @@
+# Hemline backend: compiled resume PDFs written at runtime.
+apps/backend/storage/
+
 # Logs
 logs
 *.log

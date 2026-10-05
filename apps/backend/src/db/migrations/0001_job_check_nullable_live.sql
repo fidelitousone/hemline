@@ -1,0 +1,1 @@
+ALTER TABLE "job_checks" ALTER COLUMN "is_live" DROP NOT NULL;

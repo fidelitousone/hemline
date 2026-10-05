@@ -1,0 +1,13 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# @crxjs/vite-plugin@2.3.0 imports from 'vite' but doesn't declare it as a
+# dependency/peerDependency, which breaks under pnpm's strict linking.
+packageExtensions:
+  '@crxjs/vite-plugin':
+    peerDependencies:
+      vite: '*'
+
+onlyBuiltDependencies:
+  - esbuild
