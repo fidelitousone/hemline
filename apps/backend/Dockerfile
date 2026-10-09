@@ -1,6 +1,8 @@
-FROM node:22-slim
+FROM node:22-trixie-slim
 
-# tectonic (self-contained LaTeX engine, fetches packages on demand).
+# tectonic (self-contained LaTeX engine, fetches packages on demand). The prebuilt binary
+# from the quick-install script needs glibc >= 2.38, which node:22-slim's Debian bookworm
+# doesn't have (only 2.36) — hence trixie above.
 RUN apt-get update \
   && apt-get install -y --no-install-recommends curl ca-certificates \
   && curl -fsSL https://drop-sh.fullyjustified.net | sh \

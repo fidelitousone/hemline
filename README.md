@@ -58,10 +58,12 @@ history of what you sent to each company.
 ## Requirements
 
 - Node.js 22 or newer and pnpm 10 (`corepack enable` gives you pnpm)
-- Postgres 17 (the version the compose file uses), either in Docker or installed locally
-- Docker with the Compose plugin (optional, for the containerised setup)
+- Postgres 17 (the version the compose file uses), either containerized or installed locally
+- Podman (rootless, recommended) or Docker, with a Compose provider — `podman-compose` (gives
+  you the `podman compose` subcommand) or Docker's Compose plugin (optional; only needed for the
+  containerised setup)
 - [`tectonic`](https://tectonic-typesetting.github.io) on your `PATH` (for running the backend
-  outside Docker). On Arch: `sudo pacman -S tectonic`.
+  outside a container). On Arch: `sudo pacman -S tectonic`.
 - An [OpenRouter](https://openrouter.ai) API key. Tailoring costs whatever the model you choose
   charges per request.
 - Chrome or any Chromium-based browser for the extension
@@ -91,22 +93,27 @@ Edit `.env`. These are the variables the backend reads:
 
 ### 2. Start Postgres
 
-With Docker Compose (this also starts the backend container; see step 6 for the container path):
+With Podman (this also starts the backend container; see "Running everything in a container"
+below for that path):
 
 ```bash
-docker compose up -d postgres
+podman compose up -d postgres
 ```
 
-Without the Compose plugin, run the same database directly:
+The same command works with `docker compose` if that's what you have instead — `docker-compose.yml`
+is Docker/Podman-agnostic.
+
+Without Compose, run the same database directly:
 
 ```bash
-docker run -d --name hemline-pg \
+podman run -d --name hemline-pg \
   -e POSTGRES_USER=hemline -e POSTGRES_PASSWORD=hemline -e POSTGRES_DB=hemline \
   -p 5432:5432 -v hemline-pg:/var/lib/postgresql/data \
   postgres:17-alpine
 ```
 
-If you run Postgres yourself, create a database and point `DATABASE_URL` at it.
+(swap `podman` for `docker` if you'd rather use that). If you run Postgres yourself outside a
+container entirely, create a database and point `DATABASE_URL` at it.
 
 ### 3. Install and migrate
 
@@ -169,18 +176,22 @@ backend on port 3000. A production build of the dashboard is produced by
 `pnpm --filter dashboard build`, but the backend does not serve it yet, so for now the dev server
 is the way to use it.
 
-### Running everything in Docker
+### Running everything in a container
 
-`docker compose up -d` builds the backend image and starts it next to Postgres. The image
-includes `tectonic` and a headless Chromium for liveness checks, so you don't have to install
-either on the host. The backend reads `.env`, and the compose file points `DATABASE_URL` at the
-Postgres container. Migrations are not run automatically, so run them once after the first start:
+`podman compose up -d --build` (or `docker compose up -d --build`) builds the backend image and
+starts it next to Postgres. The image includes `tectonic` and a headless Chromium for liveness
+checks, so you don't have to install either on the host. The backend reads `.env`, and the
+compose file points `DATABASE_URL` at the Postgres container. Migrations are not run
+automatically, so run them once after the first start:
 
 ```bash
-docker compose exec backend pnpm db:migrate
+podman compose exec backend pnpm db:migrate
 ```
 
-Compiled PDFs are kept in a named volume (`backend-storage`).
+Compiled PDFs are kept in a named volume (`backend-storage`). This whole path — build, both
+containers, migrations, and a live `/api/health` check — has been verified under rootless
+podman; it should work identically under Docker since the Dockerfile and compose file use
+nothing podman-specific.
 
 ## Using it day to day
 
